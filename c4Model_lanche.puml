@@ -8,6 +8,11 @@ System(mobile, "Menu Lancheirinha", "Aplicativo de encomenda de lancheiras saud�
 
 Person(Admin, "Admin", "Responsável por gerenciar os pedidos", $tags="adm")
 
+System(whatsapp, "WhatsApp da Empresa", "Canal de comunicação para receber informações de vendas")
+
+Rel(mobile, whatsapp, "Pedido de lancheirinhas")
+Rel(whatsapp, Admin, "Comunicação de vendas")
+
 Rel(personAlias, mobile, "Fazer pedido")
 Rel(Admin, mobile, "Liberar pedidos")
 @enduml
