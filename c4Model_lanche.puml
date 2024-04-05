@@ -17,11 +17,73 @@ Rel(Admin, mobile, "Liberar pedidos")
 @startuml C4_Containers
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-Container(web, "Web App", "React.js", "Aplicativo web para administração de pedidos", $tags="adm")
-Container(api, "API", "Node.js", "API que gerencia os pedidos e comunica com o aplicativo móvel")
-ContainerDb(db, "Database", "PostgreSQL", "Banco de dados que armazena informações sobre pedidos, clientes, etc.")
+AddElementTag("adm", $fontColor="#d73027")
 
-Rel(Admin, web, "Gerenciar pedidos")
-Rel(web, api, "Enviar/receber dados")
-Rel(api, db, "Acessar dados")
+Person(user, "Usuário", "Cliente que usa o aplicativo para comprar lancheirinhas")
+System(app, "Aplicativo Flutter", "Aplicativo de venda de lancheirinhas saudáveis em Flutter")
+Container(auth, "Autenticação", "Firebase Authentication", "Gerencia a autenticação de usuários")
+Container(db, "Banco de Dados", "Firebase Firestore", "Armazena informações sobre clientes, pedidos e lancheirinhas")
+Container(payment, "Pagamentos", "Gateway de pagamento", "Processa os pagamentos dos pedidos")
+Container(notif, "Notificações", "Firebase Cloud Messaging", "Envia notificações aos usuários")
+System(whatsapp, "WhatsApp da Empresa", "Canal de comunicação para receber informações de vendas")
+
+Person(Admin, "Admin", "Responsável por gerenciar os pedidos", $tags="adm")
+
+Rel(user, app, "Acessa")
+Rel(app, auth, "Autentica usuário")
+Rel(app, db, "Armazenamento dados")
+Rel(app, payment, "Processo pagamentos")
+Rel(app, notif, "Envia notificações")
+Rel(notif, whatsapp, "Envia informações de vendas")
+Rel_R(Admin, whatsapp, "Realiza Negociações")
+
 @enduml
+
+@startuml C4_Components
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+System(app, "Aplicativo Flutter", "Aplicativo de venda de lancheirinhas saudáveis em Flutter")
+Component(authComp, "Firebase Authentication", "Gerencia a autenticação de usuários")
+
+System(app, "Aplicativo Flutter", "Aplicativo de venda de lancheirinhas saudáveis em Flutter")
+Component(dbComp, "Firebase Firestore", "Armazena informações sobre clientes, pedidos e lancheirinhas")
+
+System(app, "Aplicativo Flutter", "Aplicativo de venda de lancheirinhas saudáveis em Flutter")
+Component(paymentComp, "Gateway de Pagamento", "Processa os pagamentos dos pedidos")
+System(whatsapp, "WhatsApp da Empresa", "Canal de comunicação para receber informações de vendas")
+
+Rel(app, paymentComp, "Utiliza Gateway de Pagamento para processar pagamentos")
+Rel(paymentComp, whatsapp, "Envia informações de vendas para WhatsApp da Empresa")
+
+Rel(app, dbComp, "Utiliza Firebase Firestore para armazenamento de dados")
+
+Rel(app, authComp, "Utiliza Firebase Authentication para autenticação")
+@enduml
+
+@startuml
+class LoginPage {
+    - FormularioDeLogin formulario
+    - ServicoDeAutenticacao servicoAutenticacao
+    + void exibirPagina()
+}
+
+class FormularioDeLogin {
+    - String usuario
+    - String senha
+    + void validarCampos()
+}
+
+class ServicoDeAutenticacao {
+    + boolean autenticar(String usuario, String senha)
+}
+
+LoginPage --> FormularioDeLogin: contém
+LoginPage --> ServicoDeAutenticacao: utiliza
+FormularioDeLogin --> ServicoDeAutenticacao: utiliza
+@enduml
+
+
+
+
+
+
