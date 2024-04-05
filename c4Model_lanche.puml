@@ -1,0 +1,27 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+AddElementTag("adm", $fontColor="#d73027")
+
+Person(personAlias, "Usúario", "Responsável por fazer a encomenda")
+System(mobile, "Menu Lancheirinha", "Aplicativo de encomenda de lancheiras saudáveis")
+
+Person(Admin, "Admin", "Responsável por gerenciar os pedidos", $tags="adm")
+
+Rel(personAlias, mobile, "Fazer pedido")
+Rel(Admin, mobile, "Liberar pedidos")
+@enduml
+
+// Adicione uma linha em branco ou um comentário para separar os diagramas
+
+@startuml C4_Containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Container(web, "Web App", "React.js", "Aplicativo web para administração de pedidos", $tags="adm")
+Container(api, "API", "Node.js", "API que gerencia os pedidos e comunica com o aplicativo móvel")
+ContainerDb(db, "Database", "PostgreSQL", "Banco de dados que armazena informações sobre pedidos, clientes, etc.")
+
+Rel(Admin, web, "Gerenciar pedidos")
+Rel(web, api, "Enviar/receber dados")
+Rel(api, db, "Acessar dados")
+@enduml
